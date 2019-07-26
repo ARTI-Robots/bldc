@@ -1671,7 +1671,7 @@ void mcpwm_foc_adc_int_handler(void *p, uint32_t flags) {
 		utils_truncate_number(&duty_filtered, -1.0, 1.0);
 
 		float duty_set = m_duty_cycle_set;
-		bool control_duty = m_control_mode == CONTROL_MODE_DUTY;
+		bool control_duty = (m_control_mode == CONTROL_MODE_DUTY) || (m_control_mode == CONTROL_MODE_SPEED);
 
 		// When the filtered duty cycle in sensorless mode becomes low in brake mode, the
 		// observer has lost tracking. Use duty cycle control with the lowest duty cycle
@@ -2516,7 +2516,8 @@ static void run_pid_control_speed(float dt) {
 		}
 	}
 
-	m_iq_set = output * m_conf->lo_current_max;
+  m_duty_cycle_set = output;
+//	m_iq_set = output * m_conf->lo_current_max;
 }
 
 static void stop_pwm_hw(void) {
